@@ -13,7 +13,7 @@ const port = process.env.PORT || 5000;
 // 
 // console.log(process.env.admin, process.env.pass)
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.admin}:${process.env.pass}@cluster0.j5xue.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -33,10 +33,40 @@ async function run() {
     // my database 
     const softHeart = client.db("softHeart");
     const campaigns = softHeart.collection("Campaign");
-    app.get('/',(req, res) => {
-        res.send('yes')
+    app.get('/',async(req, res) => {
+        const data =  campaigns.find()
+        const result = await data.toArray()
+        res.send(result)
+    })
+
+    app.get('/:mail',async(req, res) => {
+      const mail = req.params.mail
+      const query = { email : mail}
+      const data = campaigns.find(query)
+      const result = await data.toArray()
+      res.send(result)
+    })
+    
+    app.get('/updateCamp/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = {_id :new ObjectId(id)}
+      const oneData = await campaigns.findOne(query)
+      res.send(oneData)
     })
    
+    app.patch('/updateCamp/:id',async(req, res) => {
+      const id = req.params.id;
+      const data = req.body
+      const filter = {_id : new ObjectId(id)}
+      const updateDoc = {
+        $set: {
+          title: data .campaignTitle,  campType : data .campaignType, campaignStart : data .campStart, campaignEnd : data .campEnd,  campDiscription : data .description,
+            donation : data .donationAmount_, file: data .file, name : data .name, email: data .email,
+        }
+      }
+      const result = await campaigns.updateMany(filter, updateDoc)
+      res.send(result)
+    })
     
     
     // Insert the defined document into the "haiku" collection
@@ -45,8 +75,8 @@ async function run() {
     app.post('/newcampaign', async(req,res)=>{
         const camp = req.body;
         const doc = {
-            title: camp.campaignTitle,  campType : camp.campaignType, campaignStart : camp.campStart, campaignEnd : camp.campEnd, joinAbleMember : camp.applyer, campDiscription : camp.description,
-            donation : camp.isDonationNeed, file: camp.file, author: camp.author
+            title: camp.campaignTitle,  campType : camp.campaignType, campaignStart : camp.campStart, campaignEnd : camp.campEnd,  campDiscription : camp.description,
+            donation : camp.donationAmount_, file: camp.file, name : camp.name, email: camp.email,
           }
         const result = await campaigns.insertOne(doc);
         res.send(result)
