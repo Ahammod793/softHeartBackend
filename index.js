@@ -54,14 +54,15 @@ async function run() {
       res.send(oneData)
     })
    
+    
     app.patch('/updateCamp/:id',async(req, res) => {
       const id = req.params.id;
       const data = req.body
       const filter = {_id : new ObjectId(id)}
       const updateDoc = {
         $set: {
-          title: data .campaignTitle,  campType : data .campaignType, campaignStart : data .campStart, campaignEnd : data .campEnd,  campDiscription : data .description,
-            donation : data .donationAmount_, file: data .file, name : data .name, email: data .email,
+          title: data.campaignTitle,  campType : data.campaignType, campaignStart : data.campStart, campaignEnd : data.campEnd,  campDiscription : data.description,
+            donation : data.donationAmount_, file: data.file, name : data.name, email: data.email,
         }
       }
       const result = await campaigns.updateMany(filter, updateDoc)
@@ -83,6 +84,7 @@ async function run() {
         
     })
 
+  
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. success MongoDB!");
