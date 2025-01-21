@@ -54,7 +54,8 @@ async function run() {
       res.send(oneData)
     })
    
-    
+ 
+
     app.patch('/updateCamp/:id',async(req, res) => {
       const id = req.params.id;
       const data = req.body
@@ -84,7 +85,7 @@ async function run() {
         
     })
 
-  
+   
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. success MongoDB!");
