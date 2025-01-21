@@ -87,6 +87,13 @@ async function run() {
 
    
 
+    app.delete('/campaign/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)};
+     const DeleteRes = await campaigns.deleteOne(query)
+      res.send(DeleteRes)
+    })
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. success MongoDB!");
   } finally {
