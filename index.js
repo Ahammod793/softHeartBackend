@@ -122,7 +122,14 @@ async function run ()
     } )
    
 
-   
+    app.get('/donarDetails/:mail',async(req, res) => {
+      const mail = req.params.mail;
+      // console.log(mail)
+      const query = {donarMail : mail}
+      const collection =  donarsCollection.find(query)
+      const result = await collection.toArray(collection)
+      res.send(result)
+    })
 
 
 
