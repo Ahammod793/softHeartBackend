@@ -37,6 +37,14 @@ async function run() {
       res.send(result);
     });
 
+    app.get('/runningcamp', async(req, res)=> {
+      const filter = {
+        campaignStart : { $lt :  new Date().toISOString()},
+        campaignEnd : { $gt:  new Date().toISOString()}
+      }
+       const result = await campaigns.find(filter).limit(0).toArray()
+      res.send(result)
+    });
     app.get('/:mail', async (req, res) => {
       const mail = req.params.mail;
       const query = { email: mail };
